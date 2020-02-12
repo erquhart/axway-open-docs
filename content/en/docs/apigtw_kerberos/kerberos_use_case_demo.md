@@ -1,11 +1,10 @@
 {
-"title": "API Gateway as both Kerberos client and service",
-"linkTitle": "API Gateway as both Kerberos client and service",
-"weight":"4",
-"date": "2019-11-14",
-"description": "Configure API Gateway to act both as Kerberos client and Kerberos service."
+"title": "TEST",
+  "linkTitle": "API Gateway as both Kerberos client and service",
+  "weight": "4",
+  "date": "2019-11-14",
+  "description": "Configure API Gateway to act both as Kerberos client and Kerberos service."
 }
-
 For demonstration purposes, or to test configuring Kerberos authentication, you can configure API Gateway to act both as Kerberos client (`DemoClient`) and Kerberos service (`DemoService`). This configuration is not suitable for production environment.
 
 This is the most straight-forward setup to get started with Kerberos authentication in API Gateway. You configure API Gateway to act as a Kerberos client and authenticate to API Gateway that acts as a Kerberos service.
@@ -40,18 +39,18 @@ Configure a user account for the Kerberos client principal. In this example, the
 2. Right-click **Users**, and select **New > User**.
 3. Enter a name (such as `DemoClient`) in the **First Name** and **User Logon Name** fields, ensure the Active Directory domain is set to your domain, and click **Next**.
 4. Enter the password, and do the following:
-    * **User must change password at next logon**: Deselect this.
-    * **User cannot change password**: Select this.
-    * **Password never expires**: Select this.
 
-    This ensures that a working API Gateway configuration does not stop working when a user chooses, or is prompted to change their password. API Gateway does not track these actions.
+   * **User must change password at next logon**: Deselect this.
+   * **User cannot change password**: Select this.
+   * **Password never expires**: Select this.
 
-    If these options are not suitable in your implementation and a user password changes in Active Directory, you must then update the password or keytab of the Kerberos client or service related to the user in Policy Studio, and redeploy the configuration to API Gateway.
+   This ensures that a working API Gateway configuration does not stop working when a user chooses, or is prompted to change their password. API Gateway does not track these actions.
 
-    If you cannot deselect **User must change password at next logon**, ensure the user changes the password and that the new password or keytab is deployed to API Gateway *before* API Gateway attempts to connect as this user.
+   If these options are not suitable in your implementation and a user password changes in Active Directory, you must then update the password or keytab of the Kerberos client or service related to the user in Policy Studio, and redeploy the configuration to API Gateway.
 
-    You can store Kerberos passwords in a KPS table to update a changed password in runtime. For more details, see [Use KPS to store passwords for Kerberos authentication](/docs/apigtw_kerberos/kerberos_kps#use-kps-to-store-passwords-for-kerberos-authentication).
+   If you cannot deselect **User must change password at next logon**, ensure the user changes the password and that the new password or keytab is deployed to API Gateway *before* API Gateway attempts to connect as this user.
 
+   You can store Kerberos passwords in a KPS table to update a changed password in runtime. For more details, see [Use KPS to store passwords for Kerberos authentication](/docs/apigtw_kerberos/kerberos_kps#use-kps-to-store-passwords-for-kerberos-authentication).
 5. Click **Next > Finish**.
 
 ### Configure a user account for the Kerberos service
@@ -59,17 +58,17 @@ Configure a user account for the Kerberos client principal. In this example, the
 1. Configure a user account for the Kerberos service as in [Configure a user account for the Kerberos client](configure-a-user-account-for-the-kerberos-client). In this example, the name of the service is `DemoService@AXWAY.COM`.
 2. Map a Service Principal Name (SPN) to the user account. The Kerberos client uses the SPN to uniquely identify a service. To map the SPN, open a command prompt on the Windows Domain Controller, and enter the following command:
 
-    ```
-    ktpass -princ HTTP/<host>@<Kerberos realm> -mapuser <user> -pass password -out <user>.keytab -crypto rc4-hmac-nt -kvno 0
-    ```
+   ```
+   ktpass -princ HTTP/<host>@<Kerberos realm> -mapuser <user> -pass password -out <user>.keytab -crypto rc4-hmac-nt -kvno 0
+   ```
 
-    The SPN is of the format `HTTP/<host>@<Kerberos realm>`, where `<host>` is the name of the host running the Kerberos service, DemoService in this case:
+   The SPN is of the format `HTTP/<host>@<Kerberos realm>`, where `<host>` is the name of the host running the Kerberos service, DemoService in this case:
 
-    ```
-    ktpass -princ HTTP/DemoService.axway.com@AXWAY.COM -mapuser DemoService -pass Axway123 -out DemoService.keytab -crypto rc4-hmac-nt -kvno 0
-    ```
+   ```
+   ktpass -princ HTTP/DemoService.axway.com@AXWAY.COM -mapuser DemoService -pass Axway123 -out DemoService.keytab -crypto rc4-hmac-nt -kvno 0
+   ```
 
-    Replace the example realm name with your own domain name. Note that the realm name is uppercase.
+   Replace the example realm name with your own domain name. Note that the realm name is uppercase.
 
 The command creates an SPN `HTTP/DemoService.axway.com@AXWAY.COM`, which is mapped to the `DemoService` user account. The command also creates a keytab file for the account that you can use later when configuring a Kerberos service for your gateway in Policy Studio.
 
@@ -85,13 +84,15 @@ This section describes how to add Kerberos principals for the Kerberos client an
 
 1. In the node tree, click **Environment Configuration > External Connections > Kerberos Principals**.
 2. Add a new Kerberos principal for the Kerberos client account (`DemoClient@AXWAY.COM`) as follows:
-    * **Name**: `DemoClient`
-    * **Principal Name**: `DemoClient@AXWAY.COM`
-    * **Principal Type**: `NT_USER_NAME`
+
+   * **Name**: `DemoClient`
+   * **Principal Name**: `DemoClient@AXWAY.COM`
+   * **Principal Type**: `NT_USER_NAME`
 3. Add a new Kerberos principal for the service account (`DemoService`) as follows:
-    * **Name**: `DemoService`
-    * **Principal Name**: `DemoService@AXWAY.COM`
-    * **Principal Type**: `NT_USER_NAME`
+
+   * **Name**: `DemoService`
+   * **Principal Name**: `DemoService@AXWAY.COM`
+   * **Principal Type**: `NT_USER_NAME`
 
 ## Configure API Gateway to act as the Kerberos client
 
@@ -102,29 +103,33 @@ This section describes how to configure API Gateway to act as a Kerberos client 
 1. In the node tree, click **Environment Configuration > External Connections > Kerberos Clients**.
 2. Click **Add a Kerberos Client**, and enter a name for your client (`DemoClient Kerberos Client`).
 3. On the **Kerberos Endpoint** tab, set the following:
-    * **Load via JAAS Login**: Select this option and the **Request from KDC** option.
-    * **Kerberos Principal**: `DemoClient`.
-    * **Enter Password**: Enter the password.
-    * **Enabled**: Make sure this option is selected.
+
+   * **Load via JAAS Login**: Select this option and the **Request from KDC** option.
+   * **Kerberos Principal**: `DemoClient`.
+   * **Enter Password**: Enter the password.
+   * **Enabled**: Make sure this option is selected.
 4. On the **Advanced** tab, set the following:
-    * **Mechanism**: `SPNEGO_MECHANISM`.
-    * **Context Settings**: Select the following options:
-        * **Mutual authentication**
-        * **Integrity**
-        * **Confidentiality**
-        * **Anonymity**
-        * **Replay Detection**
-        * **Sequence Checking**
-    * **Synchronize to Avoid Replay Errors at Service**: Deselect this option to improve performance.
+
+   * **Mechanism**: `SPNEGO_MECHANISM`.
+   * **Context Settings**: Select the following options:
+
+     * **Mutual authentication**
+     * **Integrity**
+     * **Confidentiality**
+     * **Anonymity**
+     * **Replay Detection**
+     * **Sequence Checking**
+   * **Synchronize to Avoid Replay Errors at Service**: Deselect this option to improve performance.
 
 ### Configure a Kerberos profile for the Kerberos client
 
 1. In the node tree, click **Environment Configuration > External Connections > Client Credentials > Kerberos**.
 2. Add a Kerberos profile as follows:
-    * **Profile Name**: `Authenticate to DemoService`.
-    * **Kerberos Client**: `DemoClient Kerberos Client`.
-    * **Kerberos Service Principal**: `DemoService`.
-    * **Send token with first request**: Select this option.
+
+   * **Profile Name**: `Authenticate to DemoService`.
+   * **Kerberos Client**: `DemoClient Kerberos Client`.
+   * **Kerberos Service Principal**: `DemoService`.
+   * **Send token with first request**: Select this option.
 
 ### Configure a client-side policy
 
@@ -149,17 +154,16 @@ The client-side policy has the following flow:
 1. In the node tree, click **Environment Configuration > Server Settings > Security > Kerberos**, and click **Add Kerberos Configuration**.
 2. On the **krb5.conf** tab, change the following settings:
 
-    ```
-    [libdefaults]
-    default_realm = AXWAY.COM
-    [realms]
-    AXWAY.COM = {
-    kdc = dc.axway.com
-    }
-    ```
+   ```
+   [libdefaults]
+   default_realm = AXWAY.COM
+   [realms]
+   AXWAY.COM = {
+   kdc = dc.axway.com
+   }
+   ```
 
-    Replace the realm settings in the example code with your Kerberos realm, and set the `kdc` setting to the host name of your Windows Domain Controller.
-
+   Replace the realm settings in the example code with your Kerberos realm, and set the `kdc` setting to the host name of your Windows Domain Controller.
 3. Click the **Deploy** icon to deploy the configuration to API Gateway.
 
 You have configured and deployed a simple client-side policy for Kerberos authentication using SPNEGO.
@@ -173,9 +177,10 @@ This section describes how to configure API Gateway to act as a Kerberos client 
 1. In the node tree, click **Environment Configuration > External Connections > Kerberos Services**.
 2. Click **Add a Kerberos Service**, and enter a name for your service (`DemoService Kerberos Service`).
 3. On the **Kerberos Endpoint** tab, set the following:
-    * **Kerberos Principal**:`DemoService@AXWAY.COM`.
-    * **Enter Password**: Enter the password you configured for the user account in Active Directory.
-    * **Enabled**: Select this option.
+
+   * **Kerberos Principal**:`DemoService@AXWAY.COM`.
+   * **Enter Password**: Enter the password you configured for the user account in Active Directory.
+   * **Enabled**: Select this option.
 4. On the **Advanced** tab, set **Mechanism** to `SPNEGO_MECHANISM`, and click **OK**.
 
 ### Configure a service-side policy
@@ -187,21 +192,17 @@ This section describes how to configure API Gateway to act as a Kerberos client 
 5. Open the **Conversion** category in the palette, and drag a **Set Message** filter onto the policy canvas.
 6. Set **Content type** as `text/xml`, copy the following code to **Message Body**, and click **Finish**:
 
-    ```
-    <Response>Kerberos client '${authentication.subject.id} authenticated' successfully.</Response>
-    ```
-
+   ```
+   <Response>Kerberos client '${authentication.subject.id} authenticated' successfully.</Response>
+   ```
 7. Open the **Utility** category in the palette, and drag a **Reflect Message** filter onto the policy canvas.
 8. Click **Add Relative Path**, and create a new relative path `/service` that links to this Kerberos service-side policy.
 9. Connect the filters with success paths.
 
-    ![Service-side policy with Kerberos Service, Set Message, and Reflect Message filters](/Images/IntegrationGuides/KerberosIntegration/kerb_use_case_demo/demo_kerb_svc_paths.png)
+   The policy has the following flow:
 
-    The policy has the following flow:
-
-    * Authenticate the client.
-    * Return a response with a HTTP status `200` if the authentication passes.
-
+   * Authenticate the client.
+   * Return a response with a HTTP status `200` if the authentication passes.
 10. Click the **Deploy** icon to deploy the configuration to your Kerberos service.
 
 You have now configured a simple service-side policy for SPNEGO authentication. The Kerberos client invokes this policy on `http://localhost:8080/service`.
